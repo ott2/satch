@@ -530,8 +530,29 @@ parse (void)
 	if (ch == EOF)
 	  parse_error ("unexpected end-of-file in header comment");
     }
+  if (ch == 'm')
+    {
+      while (is_space (ch = next ()) )
+is_space ( char c )
+  {
+    if (ch == ' ' || ch == '\t')
+      {
+        while ((ch = next ()) == ' ' || ch == '\t')
+	;
+      }
+        if (ch == EOF)
+          parse_error ("unexpected end-of-file in clause to minimise");
+      
+    }
+  if (ch == 'e')
+    {
+      while ((ch = next ()) == ' ')
+        if (ch == EOF)
+          parse_error ("unexpected end-of-file in declaration of result literal");
+      
+    }
   if (ch != 'p')
-    parse_error ("expected 'p' or 'c'");
+    parse_error ("expected 'p' or 'c' or 'm' or 'e'");
   if (next () != ' ')
     parse_error ("expected space after 'p'");
   char format = next ();
