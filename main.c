@@ -503,6 +503,9 @@ percent (double a, double b)
   return b ? 100 * a / b : 0;
 }
 
+// helper function
+int is_space ( char c ) { return( c == ' ' || c == '\t' ); }
+
 // This is the actual DIMACS file parser.  It uses the 'next' function to
 // read bytes from the global file.  Beside proper error messages in case of
 // parse errors it also prints information about parsed clauses etc.
@@ -533,23 +536,16 @@ parse (void)
   if (ch == 'm')
     {
       while (is_space (ch = next ()) )
-is_space ( char c )
-  {
-    if (ch == ' ' || ch == '\t')
-      {
-        while ((ch = next ()) == ' ' || ch == '\t')
-	;
-      }
-        if (ch == EOF)
-          parse_error ("unexpected end-of-file in clause to minimise");
-      
+        ;
+      if (ch == EOF)
+        parse_error ("unexpected end-of-file in clause to minimise");
     }
   if (ch == 'e')
     {
-      while ((ch = next ()) == ' ')
-        if (ch == EOF)
-          parse_error ("unexpected end-of-file in declaration of result literal");
-      
+      while (is_space (ch = next ()) )
+        ;
+      if (ch == EOF)
+        parse_error ("unexpected end-of-file in declaration of result literal");
     }
   if (ch != 'p')
     parse_error ("expected 'p' or 'c' or 'm' or 'e'");
