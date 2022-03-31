@@ -519,6 +519,8 @@ static void
 parse (void)
 {
   satch_start_profiling_parsing (solver);
+  struct int_stack m_stack;
+  INIT_STACK (m_stack);
 
   if (!quiet)
     {
@@ -532,20 +534,6 @@ parse (void)
       while ((ch = next ()) != '\n')
 	if (ch == EOF)
 	  parse_error ("unexpected end-of-file in header comment");
-    }
-  if (ch == 'm')
-    {
-      while (is_space (ch = next ()) )
-        ;
-      if (ch == EOF)
-        parse_error ("unexpected end-of-file in clause to minimise");
-    }
-  if (ch == 'e')
-    {
-      while (is_space (ch = next ()) )
-        ;
-      if (ch == EOF)
-        parse_error ("unexpected end-of-file in declaration of result literal");
     }
   if (ch != 'p')
     parse_error ("expected 'p' or 'c' or 'm' or 'e'");
@@ -646,6 +634,68 @@ parse (void)
 	      parse_error ("unexpected end-of-file in comment");
 	  continue;
 	}
+      if (ch == 'm')
+        {
+          while (is_space (ch = next ()))
+            ;
+          if (ch == EOF)
+            parse_error ("unexpected end-of-file in clause to minimise");
+          while ('\n' != ch)
+            {
+              int sign = 1;
+              printf ("ch=%c\n", ch);
+              if (ch == '-')
+                {
+                  ch = next ();
+                  if (!isdigit (ch))
+                    parse_error ("expected digit after '-'");
+                  if (ch == '0')
+                    parse_error ("expected non-zero digit after '-'");
+                  sign = -1;
+                }
+              else if (!isdigit (ch))
+                parse_error ("expected 2 number");
+
+              // Read the variable index and make sure not to overflow.
+
+              int idx = ch - '0';
+              int lit = 0;
+              while (isdigit (ch = next ()))
+                {
+                  if (INT_MAX / 10 < idx)
+                    parse_error ("number way too large");
+                  idx *= 10;
+                  const int digit = ch - '0';
+                  if (INT_MAX - digit < idx)
+                    parse_error ("number too large");
+                  idx += digit;
+                }
+
+              // Now we have the variable with its sign as parsed literal.
+
+              lit = sign * idx;
+              printf ("m literal: %d\n", lit);
+
+              // if (ch == EOF)
+
+    //      if (ch == '\n')
+    //	break;
+    //      for (int i = 0; i < 10; i++)
+    //        PUSH (m_stack, i);
+        //for (all_elements_on_stack (int, i, m_stack))
+        //  printf ("%d\n", i);
+              while (is_space (ch))
+                ch = next ();
+            }
+          continue; // read character after final \n on 'm' line
+        }
+      if (ch == 'e')
+        {
+          while (is_space (ch = next ()))
+            ;
+          if (ch == EOF)
+            parse_error ("unexpected end-of-file in declaration of result literal");
+        }
 
       // Read XOR type.
 
@@ -847,6 +897,7 @@ parse (void)
 #ifdef NDEBUG
   RELEASE_STACK (xors);
 #endif
+  RELEASE_STACK (m_stack);
 }
 
 /*------------------------------------------------------------------------*/
