@@ -519,9 +519,6 @@ static void
 parse (void)
 {
   satch_start_profiling_parsing (solver);
-  struct int_stack m_stack;
-  INIT_STACK (m_stack);
-
   if (!quiet)
     {
       satch_section (solver, "parsing");
@@ -672,18 +669,11 @@ parse (void)
                 }
 
               // Now we have the variable with its sign as parsed literal.
-
               lit = sign * idx;
-              printf ("m literal: %d\n", lit);
+              printf ("pushing m literal: %d\n", lit);
+              //PUSH (solver->m_stack, lit);
 
-              // if (ch == EOF)
-
-    //      if (ch == '\n')
-    //	break;
-    //      for (int i = 0; i < 10; i++)
-    //        PUSH (m_stack, i);
-        //for (all_elements_on_stack (int, i, m_stack))
-        //  printf ("%d\n", i);
+              //for (all_elements_on_stack (int, i, m_stack))
               while (is_space (ch))
                 ch = next ();
             }
@@ -897,7 +887,6 @@ parse (void)
 #ifdef NDEBUG
   RELEASE_STACK (xors);
 #endif
-  RELEASE_STACK (m_stack);
 }
 
 /*------------------------------------------------------------------------*/

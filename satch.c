@@ -939,6 +939,8 @@ struct satch
   struct int_stack irred_sat_upto;
   struct int_stack red_sat_upto;
 #endif
+  // Fix-point computation shared data
+  struct int_stack m_stack;
 };
 
 // The main point of this extensive configurability is to be able to strip
@@ -11846,6 +11848,8 @@ internal_init (void)
   init_limits (solver);
 #endif
   init_profiles (solver);
+  // initialise the stack for the fix-point
+  INIT_STACK (solver->m_stack);
   return solver;
 }
 
@@ -11985,6 +11989,9 @@ internal_release (struct satch *solver)
   RELEASE_STACK (solver->vivification_schedule);
   RELEASE_STACK (solver->sorted);
 #endif
+  // Release the fix-point stack
+  RELEASE_STACK (solver->m_stack);
+
   free (solver);
 }
 
