@@ -1,0 +1,4 @@
+If m clause contains x and -x need to flag error.
+
+We were looking at satch.c decide() as the place where the variable to assign is chosen.
+
