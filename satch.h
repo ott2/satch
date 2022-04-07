@@ -39,6 +39,9 @@ void satch_release (struct satch *);	// Release solver.
 
 void satch_add (struct satch *, int literal);
 
+// adds a literal to the fix-point structure
+void satch_add_mlit (struct satch *, int literal);
+
 // Solve the current formula.  The routine returns the solution status
 // encoded as above 'UNKNOW=0', 'SATISFIABLE=10', or 'UNSATISFIABLE=20'.
 // The second argument if non-negative limits the number of conflicts

@@ -671,7 +671,7 @@ parse (void)
               // Now we have the variable with its sign as parsed literal.
               lit = sign * idx;
               printf ("pushing m literal: %d\n", lit);
-              //PUSH (solver->m_stack, lit);
+              satch_add_mlit (solver, lit);
 
               //for (all_elements_on_stack (int, i, m_stack))
               while (is_space (ch))

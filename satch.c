@@ -11998,6 +11998,12 @@ internal_release (struct satch *solver)
 /*------------------------------------------------------------------------*/
 
 static void
+internal_add_mlit (struct satch *solver, int elit)
+{
+  PUSH (solver->m_stack, elit);
+}
+
+static void
 internal_add (struct satch *solver, int elit)
 {
 #ifndef NDEBUG
@@ -12156,6 +12162,18 @@ satch_release (struct satch *solver)
 {
   REQUIRE_NON_ZERO_SOLVER ();
   internal_release (solver);
+}
+
+/*------------------------------------------------------------------------*/
+
+// Add a literal to the internal stack that holds the m clause
+void
+satch_add_mlit (struct satch *solver, int elit)
+{
+  REQUIRE_NON_ZERO_SOLVER ();
+  REQUIRE_NON_INCREMENTAL ();
+  REQUIRE_VALID_LITERAL (elit);
+  internal_add_mlit (solver, elit);
 }
 
 /*------------------------------------------------------------------------*/
