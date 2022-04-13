@@ -12,3 +12,5 @@ config.c
 *.gcov
 gmon.out
 *.proof
+tags
+.idea
