@@ -941,6 +941,8 @@ struct satch
 #endif
   // Fix-point computation shared data
   struct int_stack m_stack;
+  // m variable counter
+  unsigned m_unassigned;
 };
 
 // The main point of this extensive configurability is to be able to strip
@@ -3692,6 +3694,16 @@ activate_literals (struct satch *solver)
       solver->statistics.remaining++;
       solver->statistics.variables++;
       solver->unassigned++;
+      
+     // TODO: continue here 
+     // int tmp;
+     // for (all_elements_on_stack (int, tmp, solver->m_stack))
+     //   {
+     //       if(lit == tmp){ // ??
+     //           solver->m_unassigned++;
+     //           break;
+     //       }
+     //   }
     }
 }
 
