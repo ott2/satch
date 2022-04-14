@@ -21,3 +21,5 @@ We are at this point (maybe not later) assuming that the m clause is small relat
 This means it is OK to do repeated linear searches through the m clause, rather than anything fancy.
 Later we probably want to use a more efficient structure to store the m clause, such as an ordered array or list of integers.
 
+We should do a survey of graph representations used for SAT/MaxSAT/SMT as Matteo and others might be interested.
+Potentially also include the connectivity encodings used by the Finnish group.
