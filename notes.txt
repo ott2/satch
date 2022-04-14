@@ -1,4 +1,23 @@
-If m clause contains x and -x need to flag error.
+If m clause initially contains x and -x we need to flag error.
+We maybe should also sort the variable numbers and store this list in increasing order as an array which we allocate only once, allowing binary search.
+Doing a more complex data structure would allow even faster checking of elements.
 
-We were looking at satch.c decide() as the place where the variable to assign is chosen.
+DONE: We were looking at satch.c decide() as the place where the variable to assign is chosen.
+
+[Not really.] The DLIS approach seems to have features we might want to reuse for our lfp implementation.
+
+What happens if decide() is called but there are no variables left to assign -- will this mean that this code path is never reached?
+There seems to be solver->unassigned as a guard.
+It looks like the value of solver->unassigned is nonzero before decide() is ever called.
+We need to make sure that the effective number of unassigned variables (after the ones which are in the m clause are removed) is also positive.
+We have started adding code which iterates through the m_clause stack when incrementing unassigned, incrementing m_unassigned when a variable is added at the start which is in the m clause.
+The idea is that solver->unassigned - solver->m_unassigned represents the number of unassigned non-m-clause variables, and this is what we want to be positive.
+
+When we have precisely one unassigned non-m-clause variable left, then as part of assigning it we want to assign all the remaining m-clause variables too.
+What happens if the last non-m-clause assignment via propagation sets some of the m-clause variables differently to how they would be assigned via the LFP heuristic?
+I think this would give an incorrect answer, so we probably do want to use zero variables left as the trigger, as then all the propagation would have been done and only the remaining m-clause variables remain to be set.
+
+We are at this point (maybe not later) assuming that the m clause is small relative to the number of variables in the instance.
+This means it is OK to do repeated linear searches through the m clause, rather than anything fancy.
+Later we probably want to use a more efficient structure to store the m clause, such as an ordered array or list of integers.
 

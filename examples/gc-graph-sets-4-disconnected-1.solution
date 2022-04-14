@@ -1,0 +1,5 @@
+language Essence 1.3
+
+letting C be {1, 2, 3}
+letting W be {4}
+letting connected be false
