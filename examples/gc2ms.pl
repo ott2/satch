@@ -57,11 +57,11 @@ while (@E) {
 print <<'E2';
 c such that connected = (|C| = |V|)
 c 1 AND 2 AND 3 ... n <-> connected
-c 1 2 3 ... n n+1
+c -1 -2 -3 ... -n n+1
 c 1 AND 2 AND 3 ... n <- n+1
 E2
 
-print "$h "; for my $u (1..$v) { print "$u "; } print "0\n";
+print "$h "; for my $u (1..$v-1) { print "-$u "; } print "$v 0\n";
 for my $u (1..$v-1) { print "$h $u -$v 0\n"; }
 
 print <<'E3';
