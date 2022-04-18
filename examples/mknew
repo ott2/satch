@@ -1,0 +1,25 @@
+#!/bin/sh
+# mknew: generate a random graph, put it in con/ or dis/
+PATH="$PATH:."
+N=$1
+shift
+S=$1
+if [ "x$S" = 'x' ]; then
+  echo "Usage: $0 <vertices> <seed>"
+  exit 2
+fi
+d="graph-$N-$S"
+/bin/echo -n "Generating: $d,"
+rg.pl -n $N -s $S > $d.param
+gc2ms.pl $d.param > $d.dimacs
+open-wbo $d.dimacs > $d.out
+C=`tail -1 $d.out | sed -ne 's/^.* \([-0-9]\)/\1/; s/[0-9]*//g; s/-/x/; s/ *//g; p'`
+if [ "x$C" = 'xx' ]; then
+  /bin/echo -n " not"
+  mkdir -p dis
+  mv $d.param $d.dimacs $d.out dis
+else
+  mkdir -p con
+  mv $d.param $d.dimacs $d.out con
+fi
+echo " connected"
