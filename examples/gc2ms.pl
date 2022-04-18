@@ -16,10 +16,12 @@ my $f = '';      # given edge list for printing
 my $h = 1000000; # weight of "hard" clauses: should exceed largest vertex label
 
 while (<>) {
-  if (/letting n [^\d]+(\d+)/) {
+  if (/^\$/) {
+    next;
+  } elsif (/letting n [^\d]+(\d+)/) {
     $v = 1+$1;
     $c = 1+$v; # 1 for 1 in C, $v-1 + 1 for "connected"
-  } elsif (/letting . be([}{,\s\d]+)/) {
+  } elsif (/letting [GE] be([}{,\s\d]+)/) {
     my $e = $1;
     $e =~ s/\s//g;
     $f = $e; # keep a copy of the given edges to print in output
