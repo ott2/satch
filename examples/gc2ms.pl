@@ -34,6 +34,7 @@ while (<>) {
     $c += $v-1; # also count the "maximising |W|" clauses
   }
 }
+$h = $v if ($h < $v); # ensure hard clauses can't be swamped by soft ones
 
 print <<"END";
 p wcnf $v $c $h
