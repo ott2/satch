@@ -6,6 +6,7 @@
 # input format:
 # letting n be 4
 # letting E be {{1,2},{2,3},{3,1}}
+# $ comment lines are ignored
 # integers 1 to n are regarded as vertex names
 # E contains all the edges in the graph as a set
 # The parser is quite primitive; E has to be on one line
@@ -16,7 +17,7 @@ my $f = '';      # given edge list for printing
 my $h = 1000000; # weight of "hard" clauses: should exceed largest vertex label
 
 while (<>) {
-  if (/^\$/) {
+  if (/^\s*\$/) {
     next;
   } elsif (/letting n [^\d]+(\d+)/) {
     $v = 1+$1;
@@ -25,12 +26,9 @@ while (<>) {
     my $e = $1;
     $e =~ s/\s//g;
     $f = $e; # keep a copy of the given edges to print in output
-    $e =~ s/{(.*)}/$1,/; # set up edges in the set for easy iteration
-    while ($e) {
-      $e =~ /^\{(\d+),(\d+)/ and push @E, $1, $2;
-      $e =~ s/^\{\d+,\d+\},//;
-      $c += 2;
-    }
+    $e =~ s/[}{\s]//g;
+    @E = split ',', $e;
+    $c += scalar(@E);
     $c += $v-1; # also count the "maximising |W|" clauses
   }
 }
