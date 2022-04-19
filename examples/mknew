@@ -11,15 +11,25 @@ fi
 d="graph-$N-$S"
 /bin/echo -n "Generating: $d,"
 rg.pl -n $N -s $S > $d.param
-gc2ms.pl $d.param > $d.dimacs
-open-wbo $d.dimacs > $d.out
+gc2ms.pl $d.param > $d.wdimacs
+gc2s.pl $d.param > $d.dimacs
+open-wbo $d.wdimacs > $d.out
+lingeling $d.dimacs > $d.lingeling.out
 C=`tail -1 $d.out | sed -ne 's/^.* \([-0-9]\)/\1/; s/[0-9]*//g; s/-/x/; s/ *//g; p'`
 if [ "x$C" = 'xx' ]; then
+  C=`grep '^s ' $d.lingeling.out`
+  if [ "x$C" = 'xs SATISFIABLE' ]; then
+    /bin/echo -n " (confirmed by lingeling)"
+  fi
   /bin/echo -n " not"
   mkdir -p dis
-  mv $d.param $d.dimacs $d.out dis
+  mv $d.param $d.wdimacs $d.dimacs $d.out $d.lingeling.out dis
 else
+  C=`grep '^s ' $d.lingeling.out`
+  if [ "x$C" != 'xs SATISFIABLE' ]; then
+    /bin/echo -n " (confirmed by lingeling)"
+  fi
   mkdir -p con
-  mv $d.param $d.dimacs $d.out con
+  mv $d.param $d.wdimacs $d.dimacs $d.out $d.lingeling.out con
 fi
 echo " connected"
