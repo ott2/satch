@@ -1,4 +1,5 @@
-#!/usr/bin/env perl -w
+#!/usr/bin/env perl
+use warnings;
 # generate MaxSAT instance which checks if the input graph is connected
 # usage: gc2ms.pl graph-instance.param > graph-instance.dimacs
 # then: open-wbo graph-instance.dimacs

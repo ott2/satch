@@ -1,6 +1,7 @@
-#!/usr/bin/env perl -w
+#!/usr/bin/env perl
 # random graph: generate a pseudorandom graph
 
+use warnings;
 use 5.014;  # so srand returns the seed
 use Getopt::Long;
 
