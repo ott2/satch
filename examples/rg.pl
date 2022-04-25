@@ -13,17 +13,20 @@ sub u {
 
 my $seed = srand();
 my $help;
+my $ordered = 0;
 my $defaultn = 10;
 my $n = $defaultn;
 my $c = -log(log(2)); # approximate Pr[connected] = 50%
 GetOptions(
   'help' => \$help,
   'seed=i' => \$seed,
+  'ordered' => \$ordered,
   'n=i' => \$n,
 ) or die("Unknown commandline option\n");
 if ($help) {
-  print "Usage: $0 [-h] [-s|--seed <int>] [-n <int>]\n";
+  print "Usage: $0 [-h] [-s|--seed <int>] [-n <int>] [-o|--ordered]\n";
   print "n: number of vertices (default=$defaultn)\n";
+  print "o: sort edges before printing (default=no)\n";
   exit 0;
 }
 srand($seed);
@@ -47,7 +50,7 @@ while ($steps--) {
 }
 print 'letting E be {';
 my $SEP = '';
-for my $e (sort keys %E) {
+for my $e ($ordered ? (sort keys %E) : (keys %E)) {
   print $SEP, "{$e}";
   $SEP = ',';
 }
