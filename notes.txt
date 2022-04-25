@@ -23,3 +23,8 @@ Later we probably want to use a more efficient structure to store the m clause, 
 
 We should do a survey of graph representations used for SAT/MaxSAT/SMT as Matteo and others might be interested.
 Potentially also include the connectivity encodings used by the Finnish group.
+
+The simple parsing/building of the graph in gc.c takes about 49s compared to 80s for satch so parse and solve the much larger DIMACS instance, so getchar()/ungetc might be slow, or perhaps the individual malloc() calls should be chunked into blocks.
+Changing this to chunked access with 8K blocks reduces the time to 32s.
+Using isdigit() instead of simple version doesn't change this.
+Removing the check for whether an edge is present does speed things up, to 8s.

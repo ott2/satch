@@ -3,7 +3,6 @@
 satch
 testapi
 gencombi
-makefile
 config.c
 .config
 *~

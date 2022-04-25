@@ -1,4 +1,5 @@
-#!/usr/bin/env perl -w
+#!/usr/bin/env perl
+use warnings;
 # generate SAT instance which checks if the input graph is connected
 # the instance is satisfiable iff the graph is disconnected
 # usage: gc2ms.pl graph-instance.param > graph-instance.dimacs

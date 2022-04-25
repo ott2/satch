@@ -1,36 +1,41 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
+#include "mygetc.h"
 
+// int isint(int c) {
+//     return (c >= '0') && (c <= '9'); // assume ASCII or similar
+// }
 int isint(int c) {
-    return (c >= '0') && (c <= '9'); // assume ASCII or similar
+    return isdigit(c);
 }
 
 int readint() {
-    int c;
+    char c;
     int v = 0;
-    while (isint(c = getchar())) {
+    while (isint(c = mygetc())) {
         v = 10*v + (c-'0');
     }
-    ungetc(c,stdin);
+    myungetc(c);
     return v;
 }
 
 void readrb() {
-    int c;
-    c = getchar();
-    if ('}' != c) { ungetc(c,stdin); }
+    char c;
+    c = mygetc();
+    if ('}' != c) { myungetc(c); }
 }
 
 void readlb() {
-    int c;
-    c = getchar();
-    if ('{' != c) { ungetc(c,stdin); }
+    char c;
+    c = mygetc();
+    if ('{' != c) { myungetc(c); }
 }
 
 int readcm() {
-    int c;
-    c = getchar();
-    if (',' != c) { ungetc(c,stdin); }
+    char c;
+    c = mygetc();
+    if (',' != c) { myungetc(c); }
     return(c);
 }
 
@@ -51,19 +56,20 @@ int linsearch( edge *p, int u ) {
     return(0);
 }
 
-// int maxv = 1000;
-int maxv = 4000000;
+#define MAXV 4000000
 edge **e;
 
+/* ignore case where edge is already present: just add it again */
 void addedge( int u, int v ) {
     edge *p;
     p = malloc(sizeof(edge));
     if (NULL == p) {
-        exit(2);
+        ERROR("cannot allocate memory when adding edge");
     }
     (*p).vertex = v;
-    if (u > maxv) {
-        // resize array e
+    if (u > MAXV) {
+        // should resize array e, for now just fail
+        ERROR("cannot process more than MAXV vertices");
         p->next = NULL;
     } else {
         p->next = e[u-1];
@@ -72,15 +78,15 @@ void addedge( int u, int v ) {
 }
 
 int isedge(int u, int v ) {
-    return( (u <= maxv) && (linsearch(e[u-1],v)) );
+    return( (u <= MAXV) && (linsearch(e[u-1],v)) );
 }
 
 void expect( char *s ) {
-    int c;
+    char c;
     while ('\0' != *s) {
-        c = getchar();
-        if ( feof(stdin) ) {
-            exit(2); // reached EOF before seeing all of s
+        c = mygetc();
+        if ( myeof() ) {
+            ERROR("reached EOF before seeing all of s");
         }
         if (c == *s)
             ++s;
@@ -90,31 +96,40 @@ void expect( char *s ) {
 int main() {
 
     int u,v;
+#ifdef DEBUG
     int cnt = 0;
-    e = malloc(sizeof(struct Edge) * maxv);
+#endif // DEBUG
+    e = malloc(sizeof(struct Edge) * MAXV);
     if (NULL == e) {
-        exit(2);
+        ERROR("cannot allocate memory for graph");
     }
+    INFILE = stdin;
+    OUTFILE = stdout;
 
     expect("letting E be ");
     readlb();
-    while (!feof(stdin)) {
+    while (!myeof()) {
         readlb();
         u = readint();
-// printf("%d\n",u);
         readcm();
         v = readint();
         if (v < u) { int w = u; u = v; v = w; }
-        if (!isedge(u,v)) {
-            addedge(u,v);
-        }
+//        if (!isedge(u,v)) {
+//            addedge(u,v);
+//        }
+        addedge(u,v); // add repeated edges multiply
         readrb();
         if ('}' == readcm()) break;
+#ifdef DEBUG
         ++cnt;
-if (!(cnt % 1000000)) printf("%d-%d\n",u,v);
+        if (!(cnt % 1000000)) printf("%d-%d\n",u,v);
+#endif // DEBUG
     }
     exit(0);
 
 }
 
+#ifdef DEBUG
+// printf("%d\n",u);
 //        printf("got here\n");
+#endif // DEBUG
