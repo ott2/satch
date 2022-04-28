@@ -1,0 +1,70 @@
+c --- [ banner ] -------------------------------------------------------------
+c 
+c CaDiCaL Radically Simplified CDCL SAT Solver
+c Copyright (c) 2016-2021 A. Biere, M. Fleury, N. Froleyks
+c 
+c Version 1.5.2 ca9bff05c11bde5eae4912f9932871d1527e61d8
+c Apple clang version 13.1.6 (clang-1316.0.21.2) -Wall -Wextra -O3 -DNDEBUG -std=c++11
+c Thu Apr 28 10:48:10 BST 2022 Darwin gizmo.local 21.4.0 arm64
+c 
+c --- [ parsing input ] ------------------------------------------------------
+c 
+c reading DIMACS file from 'graph-20-52.dimacs'
+c opening file to read 'graph-20-52.dimacs'
+c found 'p cnf 20 68' header
+c found falsified original clause
+c parsed 68 clauses in 0.00 seconds process time
+c closing file 'graph-20-52.dimacs'
+c after reading 1047 bytes 0.0 MB
+c 
+c --- [ options ] ------------------------------------------------------------
+c 
+c all options are set to their default value
+c 
+c --- [ solving ] ------------------------------------------------------------
+c 
+c time measured in process time since initialization
+c 
+c  seconds  reductions  redundant irredundant
+c         MB    restarts       trail    variables
+c          level   conflicts       glue     remaining
+c 
+c 0  0.00  0  0 0   0    0    0  0% 0   24   0  0%
+c 
+c --- [ result ] -------------------------------------------------------------
+c 
+s UNSATISFIABLE
+c 
+c --- [ run-time profiling ] -------------------------------------------------
+c 
+c process time taken by individual solving procedures
+c (percentage relative to process time for solving)
+c 
+c         0.00  289.47% parse
+c         0.00    0.00% search
+c         0.00    0.00% simplify
+c   =================================
+c         0.00    8.19% solve
+c 
+c last line shows process time for solving
+c (percentage relative to total process time)
+c 
+c --- [ statistics ] ---------------------------------------------------------
+c 
+c fixed:                        20       100.00 %  of all variables
+c minimized:                     0         0.00 %  learned literals
+c shrunken:                      0         0.00 %  learned literals
+c minishrunken:                  0         0.00 %  learned literals
+c propagations:                 20         1.05 M  per second
+c 
+c seconds are measured in process time for solving
+c 
+c --- [ resources ] ----------------------------------------------------------
+c 
+c total process time since initialization:         0.00    seconds
+c total real time since initialization:            0.00    seconds
+c maximum resident set size of process:         2080.00    MB
+c 
+c --- [ shutting down ] ------------------------------------------------------
+c 
+c exit 20

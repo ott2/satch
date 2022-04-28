@@ -9,27 +9,49 @@ if [ "x$S" = 'x' ]; then
   exit 2
 fi
 d="graph-$N-$S"
+GEN="$d.param $d.wdimacs $d.dimacs $d.lingeling.out $d.cadical.out"
 /bin/echo -n "Generating: $d,"
-rg.pl -n $N -s $S > $d.param
-gc2ms.pl $d.param > $d.wdimacs
-gc2s.pl $d.param > $d.dimacs
-open-wbo $d.wdimacs > $d.out
-lingeling $d.dimacs > $d.lingeling.out
-C=`tail -1 $d.out | sed -ne 's/^.* \([-0-9]\)/\1/; s/[0-9]*//g; s/-/x/; s/ *//g; p'`
-if [ "x$C" = 'xx' ]; then
+rg.pl -n $N -s $S > "$d.param"
+gc2ms.pl "$d.param" > "$d.wdimacs"
+gc2s.pl "$d.param" > "$d.dimacs"
+C='s'
+# don't run open-wbo on large inputs
+if [ `wc -c < "$d.param"` -le 1000000 ]; then
+  open-wbo "$d.wdimacs" > "$d.openwbo.out"
+  C=`tail -1 "$d.openwbo.out" | sed -ne 's/^.* \([-0-9]\)/\1/; s/[0-9]*//g; s/-/x/; s/ *//g; p'`
+fi
+lingeling "$d.dimacs" > "$d.lingeling.out"
+cadical "$d.dimacs" > "$d.cadical.out"
+# s: skipped open-wbo x: not connected (otherwise): connected
+if [ "x$C" = 'xs' ]; then
   C=`grep '^s ' $d.lingeling.out`
+  /bin/echo -n ' lingeling says:'
   if [ "x$C" = 'xs SATISFIABLE' ]; then
-    /bin/echo -n " (confirmed by lingeling)"
+    /bin/echo -n ' not'
+    mkdir -p dis
+    mv $GEN dis
+  else
+    mkdir -p con
+    mv $GEN con
   fi
-  /bin/echo -n " not"
+else if [ "x$C" = 'xx' ]; then
+  C=`grep '^s ' $d.lingeling.out`
+  /bin/echo -n ' open-wbo says'
+  if [ "x$C" = 'xs SATISFIABLE' ]; then
+    /bin/echo -n ', confirmed by lingeling'
+  fi
+  /bin/echo -n ': not'
   mkdir -p dis
-  mv $d.param $d.wdimacs $d.dimacs $d.out $d.lingeling.out dis
+  mv $GEN $d.openwbo.out dis
 else
   C=`grep '^s ' $d.lingeling.out`
+  /bin/echo -n ' open-wbo says'
   if [ "x$C" != 'xs SATISFIABLE' ]; then
-    /bin/echo -n " (confirmed by lingeling)"
+    /bin/echo -n ", confirmed by lingeling"
   fi
+  /bin/echo -n ':'
   mkdir -p con
-  mv $d.param $d.wdimacs $d.dimacs $d.out $d.lingeling.out con
+  mv $GEN $d.openwbo.out con
 fi
-echo " connected"
+fi
+echo ' connected'
